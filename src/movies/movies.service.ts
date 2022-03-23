@@ -24,7 +24,7 @@ export class MoviesService {
                 new SearchMovieDTO(
                   movie.imdbID,
                   movie.Title,
-                  movie.Year,
+                  parseInt(movie.Year),
                   movie.Poster,
                 ),
             );
@@ -49,14 +49,14 @@ export class MoviesService {
           if (!movie.Error)
             return new MovieDTO(
               movie.Title,
-              movie.Year,
+              parseInt(movie.Year),
               movie.Released,
               movie.Genre,
               movie.Director,
               movie.Actors,
               movie.Plot,
               movie.Poster,
-              movie.imdbRating,
+              parseFloat(movie.imdbRating),
               movie.imdbID,
               movie.Website,
             );
