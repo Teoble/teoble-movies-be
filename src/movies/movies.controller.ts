@@ -8,11 +8,6 @@ export class MoviesController {
   @Get('/search')
   searchMovie(@Query() query) {
     const movies = this.moviesService.searchMovie(query.movie);
-    movies.subscribe({
-      next: (val) => {
-        console.log(val);
-      },
-    });
     return movies;
   }
 

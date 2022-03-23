@@ -28,7 +28,11 @@ export class MoviesService {
                   movie.Poster,
                 ),
             );
-          else throw new HttpException('Movie not found', 404);
+          else
+            throw new HttpException(
+              'It was not possible to find any movie',
+              404,
+            );
         }),
       );
   }
@@ -54,7 +58,7 @@ export class MoviesService {
               movie.Poster,
               movie.imdbRating,
               movie.imdbID,
-              movie.Website === 'N/A' ? null : movie.Website,
+              movie.Website,
             );
           else throw new HttpException('Movie not found', 404);
         }),
