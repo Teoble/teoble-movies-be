@@ -1,13 +1,15 @@
 export class MovieDTO {
-  Title: string;
-  Year: number;
-  Released: string;
-  Genre: string;
-  Director: string;
-  Actors: string;
-  Plot: string;
-  Poster: string;
-  imdbRating: number;
-  imdbID: string;
-  Website: string;
+  constructor(
+    public title: string,
+    public year: number,
+    public released: string,
+    public genre: string,
+    public director: string,
+    public actors: string,
+    public plot: string,
+    public poster: string,
+    public imdbRating: number,
+    public imdbID: string,
+    public website: string,
+  ) {}
 }

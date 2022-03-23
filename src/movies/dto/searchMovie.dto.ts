@@ -1,6 +1,8 @@
 export class SearchMovieDTO {
-  imdbID: string;
-  Title: string;
-  Year: number;
-  Poster: string;
+  constructor(
+    public imdbID: string,
+    public title: string,
+    public year: number,
+    public poster: string,
+  ) {}
 }

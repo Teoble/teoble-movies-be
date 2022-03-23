@@ -1,46 +1,63 @@
 import { HttpService } from '@nestjs/axios';
-import { HttpException, Injectable } from '@nestjs/common';
+import { HttpException, Inject, Injectable } from '@nestjs/common';
 import { map, Observable } from 'rxjs';
 import { SearchMovieDTO } from './dto/searchMovie.dto';
 import { MovieDTO } from './dto/movie.dto';
 
 @Injectable()
 export class MoviesService {
-  private apiKeyURL = `?apikey=${process.env.API_KEY}`;
-  private searchUrl = `${this.apiKeyURL}&type=movie`;
-  private movieUrl = `${this.apiKeyURL}&plot=full`;
+  private _apiKeyURL: string;
 
-  constructor(private httpService: HttpService) {}
-
-  searchMovie(movie: string): Observable<SearchMovieDTO[]> {
-    let searchObject = new SearchMovieDTO();
-    return this.httpService.get(`${this.searchUrl}&s=${movie}`).pipe(
-      map((response) => {
-        const movies = response.data.Search;
-        if (movies)
-          return movies.map((movie) => {
-            searchObject = {
-              ...movie,
-            };
-            console.log(Object.keys(searchObject));
-            return searchObject;
-          });
-        else throw new HttpException('Movie not found', 404);
-      }),
-    );
+  constructor(private httpService: HttpService) {
+    this._apiKeyURL = `?apikey=${process.env.API_KEY}`;
   }
 
-  getMovie(imdbID: string): Observable<MovieDTO> {
-    return this.httpService.get(`${this.movieUrl}&i=${imdbID}`).pipe(
-      map((response) => {
-        const movie = response.data;
-        if (movie) {
-          const mappedMovie: MovieDTO = {
-            ...movie,
-          };
-          return mappedMovie;
-        } else throw new HttpException('Movie not found', 404);
-      }),
-    );
+  searchMovie(movie: string): Observable<SearchMovieDTO[]> {
+    return this.httpService
+      .get(`${this._apiKeyURL}&type=movie&s=${movie}`)
+      .pipe(
+        map((response) => {
+          const movies = response.data.Search;
+          if (movies)
+            return movies.map(
+              (movie: any) =>
+                new SearchMovieDTO(
+                  movie.imdbID,
+                  movie.Title,
+                  movie.Year,
+                  movie.Poster,
+                ),
+            );
+          else throw new HttpException('Movie not found', 404);
+        }),
+      );
+  }
+
+  getMovie(
+    imdbID: string,
+    plot: 'short' | 'full' = 'full',
+  ): Observable<MovieDTO> {
+    return this.httpService
+      .get(`${this._apiKeyURL}&plot=${plot}&i=${imdbID}`)
+      .pipe(
+        map((response) => {
+          const movie = response.data;
+          if (!movie.Error)
+            return new MovieDTO(
+              movie.Title,
+              movie.Year,
+              movie.Released,
+              movie.Genre,
+              movie.Director,
+              movie.Actors,
+              movie.Plot,
+              movie.Poster,
+              movie.imdbRating,
+              movie.imdbID,
+              movie.Website === 'N/A' ? null : movie.Website,
+            );
+          else throw new HttpException('Movie not found', 404);
+        }),
+      );
   }
 }
