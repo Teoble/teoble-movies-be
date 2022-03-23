@@ -5,6 +5,12 @@ import { MoviesService } from './movies.service';
 export class MoviesController {
   constructor(private moviesService: MoviesService) {}
 
+  @Get('/suggestions')
+  suggestMovieTitles(@Query() query) {
+    const suggestions = this.moviesService.searchSuggestions(query.movie);
+    return suggestions;
+  }
+
   @Get('/search')
   searchMovie(@Query() query) {
     const movies = this.moviesService.searchMovie(query.movie);

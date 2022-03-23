@@ -3,6 +3,7 @@ import { HttpException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { of } from 'rxjs';
 import { MovieDTO } from './dto/movie.dto';
+import { MovieTitleDTO } from './dto/movieTitle.dto';
 import { SearchMovieDTO } from './dto/searchMovie.dto';
 import { MoviesService } from './movies.service';
 
@@ -32,6 +33,53 @@ describe('MoviesService', () => {
   describe('Service creation', () => {
     it('should be defined', async () => {
       expect(service).toBeDefined();
+    });
+  });
+
+  describe('Get Suggested Searches', () => {
+    it('Should return a list of movies', () => {
+      let returnMovies: MovieTitleDTO[];
+
+      jest.spyOn(mockHttpService, 'get').mockReturnValue(
+        of({
+          data: require('../movies/mocks/search.json'),
+          status: 200,
+          statusText: 'OK',
+          headers: {},
+          config: {},
+        }),
+      );
+
+      const movies = service.searchSuggestions('anyMovie');
+
+      movies.subscribe({
+        next: (val) => (returnMovies = val),
+        complete: () => {
+          expect(returnMovies).toHaveLength(3);
+        },
+      });
+    });
+    it('Should throws exception for empty search', () => {
+      jest.spyOn(mockHttpService, 'get').mockReturnValue(
+        of({
+          data: {
+            Response: 'False',
+            Error: 'Movie not found!',
+          },
+          status: 200,
+          statusText: 'OK',
+          headers: {},
+          config: {},
+        }),
+      );
+
+      const movies = service.searchSuggestions('anyMovie');
+
+      movies.subscribe({
+        complete: () => {
+          expect(movies).toHaveLength(0);
+        },
+      });
     });
   });
 

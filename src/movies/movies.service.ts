@@ -3,6 +3,7 @@ import { HttpException, Inject, Injectable } from '@nestjs/common';
 import { map, Observable } from 'rxjs';
 import { SearchMovieDTO } from './dto/searchMovie.dto';
 import { MovieDTO } from './dto/movie.dto';
+import { MovieTitleDTO } from './dto/movieTitle.dto';
 
 @Injectable()
 export class MoviesService {
@@ -10,6 +11,19 @@ export class MoviesService {
 
   constructor(private httpService: HttpService) {
     this._apiKeyURL = `?apikey=${process.env.API_KEY}`;
+  }
+
+  searchSuggestions(movie: string): Observable<MovieTitleDTO[]> {
+    return this.httpService
+      .get(`${this._apiKeyURL}&type=movie&s=${movie}`)
+      .pipe(
+        map((response) => {
+          const movies = response.data.Search;
+          if (movies)
+            return movies.map((movie: any) => new MovieTitleDTO(movie.Title));
+          else return [];
+        }),
+      );
   }
 
   searchMovie(movie: string): Observable<SearchMovieDTO[]> {

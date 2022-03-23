@@ -7,6 +7,23 @@ In order to populate the OMDb FE application, we built this BFF in other to acce
 ### API
 
 ```bash
+GET /movies/suggestions
+
+Will get a list of movies titles suggested to perform a search
+
+#Query Params
+movie - string - The text that will be searched on OMDb API
+
+#Response
+[
+  {
+    "title": string
+  },
+  ...
+]
+```
+
+```bash
 GET /movies/search
 
 Will get a list of movies according with the term searched
