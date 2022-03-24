@@ -4,6 +4,14 @@
 
 In order to populate the OMDb FE application, we built this BFF in other to access OMDb API.
 
+### Configuration
+
+Create a `.env` file in root folder and add the variable `API_KEY` adding the key generated from [OMDb API](http://www.omdbapi.com/apikey.aspx)
+
+```bash
+API_KEY=<GENERATED_KEY>
+```
+
 ### API
 
 ```bash
@@ -95,7 +103,6 @@ $ npm run test
 # e2e tests
 $ npm run test:e2e
 ```
-
 
 - Author - [Rafael Pereira](https://github.com/Teoble)
 
